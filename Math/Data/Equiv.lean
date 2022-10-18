@@ -1,14 +1,13 @@
 namespace Data
 
 structure Equiv (α : Sort u) (β : Sort v) where
-  to        : α → β
-  inv       : β → α
-  left_inv  : ∀ x, inv (to x) = x
-  right_inv : ∀ x, to (inv x) = x
+  map : α → β
+  inv : β → α
+  inv_map : ∀ x, inv (map x) = x := by simp
+  map_inv : ∀ x, map (inv x) = x := by simp
 
 infix:80 " ≃ " => Equiv
 
-attribute [simp] Equiv.left_inv
-attribute [simp] Equiv.right_inv
+attribute [simp] Equiv.inv_map Equiv.map_inv
 
 end Data

@@ -1,46 +1,56 @@
-import Math.CategoryTheory.Category
+import Math.CategoryTheory.Basic
 import Math.CategoryTheory.Functor
 
 namespace CategoryTheory
 
-structure Comma (F : Functor C E) (G : Functor D E) :=
-  left : C.obj
-  right : D.obj
-  hom : E.hom (F.obj left) (G.obj right)
+open Category
 
-structure CommaHom {F : Functor C E} {G : Functor D E} (X Y : Comma F G) :=
-  left : C.hom X.left Y.left
-  right : D.hom X.right Y.right
-  comm : Y.hom ∘ (F.hom left) = (G.hom right) ∘ X.hom
+variable [Category α] [Category β] [Category γ]
 
-def CommaId {F : Functor C E} {G : Functor D E} (X : Comma F G) : CommaHom X X := {
-  left := C.id X.left,
-  right := D.id X.right,
-  comm := by rw [F.map_id, E.comp_id, G.map_id, E.id_comp];
+structure Comma (F : Functor α γ) (G : Functor β γ) where
+  left : α
+  right : β
+  hom : hom (F.obj left) (G.obj right)
+
+variable {F : Functor α γ} {G : Functor β γ}
+
+structure CommaHom (X Y : Comma F G) where
+  left : hom X.left Y.left
+  right : hom X.right Y.right
+  comm : Y.hom ∘ (F.map left) = (G.map right) ∘ X.hom
+
+def CommaHom.id (X : Comma F G) : CommaHom X X := {
+  left := 𝟙 X.left,
+  right := 𝟙 X.right,
+  comm := by rw [F.map_id, comp_id, G.map_id, id_comp]
 }
 
-def CommaHom.comp (g : CommaHom Y Z) (f : CommaHom X Y) : CommaHom X Z := {
+def CommaHom.comp {X Y Z : Comma F G} (g : CommaHom Y Z) (f : CommaHom X Y) : CommaHom X Z := {
   left := g.left ∘ f.left,
   right := g.right ∘ f.right,
-  comm := by rw [Functor.map_comp, ← Category.assoc, g.comm, Functor.map_comp, Category.assoc, f.comm, Category.assoc],
+  comm := by rw [Functor.map_comp, ← comp_assoc, g.comm, Functor.map_comp, comp_assoc, f.comm, comp_assoc],
 }
 
-def CatComma (F : Functor C E) (G : Functor D E) : Category := {
-  obj := Comma F G,
-  hom := CommaHom,
-  id := CommaId,
-  comp := CommaHom.comp,
-  comp_id := λ f => by dsimp; unfold CommaHom.comp, CommaId; congr; dsimp; rw [C.comp_id]; rw [D.comp_id],
-  id_comp := λ f => by dsimp; unfold CommaHom.comp, CommaId; congr; dsimp; rw [C.id_comp]; rw [D.id_comp],
-  assoc := λ h g f => by dsimp; unfold CommaHom.comp; congr; rw [Category.assoc]; rw [Category.assoc],
-}
+instance CatComma (F : Functor α γ) (G : Functor β γ) : Category (Comma F G) where
+  hom := CommaHom
+  id := CommaHom.id
+  comp := CommaHom.comp
+  comp_id f := by dsimp; unfold CommaHom.comp, CommaHom.id; congr; rw [comp_id]; rw [comp_id]
+  id_comp f := by dsimp; unfold CommaHom.comp, CommaHom.id; congr; rw [id_comp]; rw [id_comp]
+  comp_assoc h g f := by dsimp; unfold CommaHom.comp; congr; rw [comp_assoc]; rw [comp_assoc]
+
+variable (α : Sort u) [Category α]
 
 -- Arrow categories
-def Arrow (C : Category) := Comma (Functor.id C) (Functor.id C)
-def CatArrow (C : Category) := CatComma (Functor.id C) (Functor.id C)
+def Arrow := Comma (Functor.id α) (Functor.id α)
+def CatArrow := CatComma (Functor.id α) (Functor.id α)
 
--- Arrow categories
-def Slice (C : Category) (X : C.obj) := Comma (Functor.id C) (Functor.const C X)
-def CatSlice (C : Category) (X : C.obj) := CatComma (Functor.id C) (Functor.const C X)
+-- Slice categories
+def Slice (X : α) := Comma (Functor.id α) (Functor.const α X)
+def CatSlice (X : α) := CatComma (Functor.id α) (Functor.const α X)
+
+-- Coslice categories
+def Coslice (X : α) := Comma (Functor.const α X) (Functor.id α)
+def CatCoslice (X : α) := CatComma (Functor.const α X) (Functor.id α)
 
 end CategoryTheory

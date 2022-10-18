@@ -1,5 +1,3 @@
-import Math.CategoryTheory.Category
-import Math.CategoryTheory.Functor
 import Math.CategoryTheory.NaturalTransformation
 
 namespace CategoryTheory

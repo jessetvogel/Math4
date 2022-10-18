@@ -1,4 +1,4 @@
-import Math.CategoryTheory.Category
+import Math.CategoryTheory.Basic
 
 namespace CategoryTheory
 
