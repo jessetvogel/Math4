@@ -9,6 +9,18 @@ class Bracket (α : Type u) where bracket : α → α → α
 instance One.toOfNat1 [inst : One α] : OfNat α 1 where ofNat := inst.one
 instance Zero.toOfNat0 [inst : Zero α] : OfNat α 0 where ofNat := inst.zero
 
+class AddZero (α : Type u) extends Add α, Zero α where
+  add_zero : ∀ (x : α), x + 0 = x
+  zero_add : ∀ (x : α), 0 + x = x
+
+class MulOne (α : Type u) extends Mul α, One α where
+  mul_one : ∀ (x : α), x * 1 = x
+  one_mul : ∀ (x : α), 1 * x = x
+
+class MulZero (α : Type u) extends Mul α, Zero α where
+  mul_zero : ∀ (x : α), x * 0 = 0
+  zero_mul : ∀ (x : α), 0 * x = x
+
 postfix:max "⁻¹" => Inv.inv
 infixr:70 " • " => SMul.smul
 notation:100 "⁅" L:100 ", " R:100 "⁆" => Bracket.bracket L R

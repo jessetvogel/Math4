@@ -6,9 +6,7 @@ open Algebra
 
 namespace RepresentationTheory
 
-structure Representation (k : Field) (G : Group) where
-  V : Module k
-  -- ρ : 
-
+-- TODO: define GroupRing
+def Representation (α : Type u) [k : Field α] (β : Type v) [G : Group β] (γ : Type w) := Module (GroupRing k G) β
 
 end RepresentationTheory
