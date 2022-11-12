@@ -70,7 +70,7 @@ def zpow_inv (x : α) (n : Int) : (x⁻¹) ^ n = x ^ (-n) := by {
 
 end Group
 
-class GroupHom (f : α → β) [Group α] [Group β] extends MulHom f
+class abbrev GroupHom (f : α → β) [Group α] [Group β] : Prop := MulHom f
 
 /-- Every group morphism sends 1 to 1. -/
 instance (f : α → β) [Group α] [Group β] [hf : GroupHom f] : OneHom f := {

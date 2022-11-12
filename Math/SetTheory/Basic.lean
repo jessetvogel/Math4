@@ -22,7 +22,8 @@ infixr:80 " ∩ " => Inter.inter
 infixl:51 " ⊆ " => Subset.subset
 postfix:max " ᶜ " => Compl.compl
 
-instance (α : Type u) : Membership α (Set α) where mem x A := A x
+instance (α : Type u) : Membership α (Set α) where
+  mem x A := A x
 
 namespace Set
 
@@ -48,7 +49,7 @@ def union (A B : Set α) : Set α := λ x => A x ∨ B x
 def diff (A B : Set α) : Set α := λ x => A x ∨ ¬ B x
 
 /-- The proposition `A ⊆ B`. -/
-def subset (A B : Set α) := ∀ x, A x → B x
+def subset (A B : Set α) := ∀ {x}, A x → B x
 
 /-- The powerset of `A`. -/
 def powerset (A : Set α) : Set (Set α) := λ B => A.subset B
@@ -62,11 +63,11 @@ instance : Compl (Set α) where compl := compl
 instance (α : Type u) : EmptyCollection (Set α) where emptyCollection := empty α
 instance : Subset (Set α) where subset := subset
 
-theorem ext (A B : Set α) (h : ∀ x, x ∈ A ↔ x ∈ B) : A = B :=
+theorem ext {A B : Set α} (h : ∀ x, x ∈ A ↔ x ∈ B) : A = B :=
   funext (λ x => propext (h x))
 
 @[simp]
-theorem compl_union (A B : Set α) : (A ∪ B)ᶜ  = Aᶜ ∩ Bᶜ := by {
+theorem compl_union (A B : Set α) : (A ∪ B)ᶜ = Aᶜ ∩ Bᶜ := by {
   apply ext;
   intro x;
   constructor;
@@ -132,6 +133,28 @@ theorem cantor (f : α → Set α) : ¬ Function.surjective f := by {
     exact h q;
   }
 }
+
+def subset_self (A : Set α) : A ⊆ A := id
+
+def subset_asymm {A B : Set α} : A ⊆ B → B ⊆ A → A = B := λ h₁ h₂ => ext (λ _ => ⟨h₁, h₂⟩)
+
+def subset_trans {A B C : Set α} : A ⊆ B → B ⊆ C → A ⊆ C := λ h₁ h₂ => λ hx => h₂ (h₁ hx)
+
+def subset_union_left (A B : Set α) : A ⊆ A ∪ B := Or.inl
+
+def subset_union_right (A B : Set α) : B ⊆ A ∪ B := Or.inr
+
+def union_subset {A B C : Set α} : A ⊆ C → B ⊆ C → A ∪ B ⊆ C := λ h₁ h₂ x hx => by {
+  cases hx;
+  apply h₁; assumption;
+  apply h₂; assumption;
+}
+
+def inter_subset_left (A B : Set α) : A ∩ B ⊆ A := And.left
+
+def inter_subset_right (A B : Set α) : A ∩ B ⊆ B := And.right
+
+def subset_inter {A B C : Set α} : A ⊆ B → A ⊆ C → A ⊆ B ∩ C := λ h₁ h₂ _ hx => ⟨h₁ hx, h₂ hx⟩
 
 end Set
 

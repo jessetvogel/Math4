@@ -2,10 +2,8 @@ import Math.Algebra.Basic
 
 namespace Algebra
 
-class Monoid (α : Type u) extends Mul α, One α where
+class Monoid (α : Type u) extends Mul α, One α, MulOne α where
   mul_assoc : ∀ (x y z : α), x * (y * z) = (x * y) * z
-  mul_one : ∀ (x : α), x * 1 = x
-  one_mul : ∀ (x : α), 1 * x = x
 
 attribute [simp] Monoid.mul_assoc Monoid.mul_one Monoid.one_mul
 
@@ -33,16 +31,11 @@ theorem left_inv_eq_right_inv {x y z : α} (h₁ : x * y = 1) (h₂ : y * z = 1)
 
 end Monoid
 
-class MonoidHom (f : α → β) [Monoid α] [Monoid β] extends MulHom f, OneHom f : Prop
+class abbrev MonoidHom (f : α → β) [Monoid α] [Monoid β] : Prop := MulHom f, OneHom f
 
--- TODO: why is this not implicitly done ?
-instance MonoidHom.id [Monoid α] : MonoidHom (id : α → α) := {
-  toMulHom := inferInstance,
-  toOneHom := inferInstance
-}
-instance MonoidHom.comp (g : β → γ) (f : α → β) [Monoid α] [Monoid β] [Monoid γ] [MonoidHom f] [MonoidHom g] : MonoidHom (g ∘ f) := {
-  toMulHom := inferInstance,
-  toOneHom := inferInstance
-}
+-- Very good!
+-- variable (g : β → γ) (f : α → β) [Monoid α] [Monoid β] [Monoid γ] [MonoidHom f] [MonoidHom g]
+-- #check (inferInstance : MonoidHom (id : α → α))
+-- #check (inferInstance :  MonoidHom (g ∘ f))
 
 end Algebra

@@ -1,8 +1,5 @@
 import Math.SetTheory.Basic
 
--- inductive Finite (α : Type u) : Prop
--- | intro : (n : Nat) → (f : Fin n → α) → f.surjective → Finite α
-
 namespace SetTheory
 
 class Set.finite {α : Type u} (A : Set α) : Prop where
@@ -17,9 +14,18 @@ def FinSet.of_set {α : Type u} (A : Set α) [hA : A.finite] : FinSet α := {
   finite := hA
 }
 
+def FinSet.of_single {α : Type u} (x : α) : FinSet α := {
+  set := λ y => x = y,
+  finite := ⟨Exists.intro 1 $ Exists.intro (λ _ => x) $ λ _ h => Exists.intro 0 h⟩
+}
+
 def FinSet.filter {α : Type u} (A : FinSet α) (h : α → Prop) : FinSet α where
   set x := x ∈ A.set ∧ h x
-  finite := sorry
+  finite := ⟨
+    match A.finite.is_finite with
+    | Exists.intro n (Exists.intro f hf) =>
+      Exists.intro n $ Exists.intro f $ λ y hy => hf y hy.1
+  ⟩
 
 instance (α : Type u) : Membership α (FinSet α) where
   mem x A := x ∈ A.set

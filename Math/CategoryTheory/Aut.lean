@@ -12,7 +12,7 @@ variable {α : Type u} [Category α]
 /-- An automorphism of `X`. -/
 def Aut (X : α) := Iso X X
 
-instance (X : α) : Group.{u} (Aut.{u, u + 1} X) where
+instance AutGroup (X : α) : Group.{u} (Aut.{u, u + 1} X) where
   one := Iso.id X
   mul g f := Iso.comp g f
   mul_assoc h g f := by {

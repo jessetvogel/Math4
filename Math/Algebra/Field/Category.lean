@@ -1,19 +1,17 @@
-import Math.Algebra.Abelian.Basic
-import Math.Algebra.Group.Category
-import Math.CategoryTheory.Category
+import Math.Algebra.Field.Basic
+import Math.CategoryTheory.Bundled.Basic
+import Math.Algebra.Ring.Category
 
 open CategoryTheory
 
 namespace Algebra
 
-def CatField : Category := {
-  obj := Field,
-  hom := λ A B => GroupHom A.toGroup B.toGroup,
-  id := λ A => GroupHom.id A.toGroup,
-  comp := GroupHom.comp,
-  comp_id := CatGroup.comp_id,
-  id_comp := CatGroup.id_comp,
-  comp_assoc := CatGroup.comp_assoc,
-}
+class abbrev FieldHom (f : α → β) [Field α] [Field β] : Prop := RingHom f
+
+instance : BundledHom FieldHom where
+  id _ := inferInstance
+  comp {_ _ _ _ _ _ _ _} _ _ := inferInstance
+
+def CatField := CatBundled Field FieldHom
 
 end Algebra

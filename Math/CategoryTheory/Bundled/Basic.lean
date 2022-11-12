@@ -7,41 +7,42 @@ structure Bundled (c : Type u → Type v) where
   type : Type u
   str : c type
 
-structure BundledHom
+set_option checkBinderAnnotations false in -- so that `[str : c α]` works even though `c α` is not a typeclass
+def Bundled.of {c : Type u → Type v} (α : Type u) [str : c α] : Bundled c where
+  type := α
+  str := str
+
+class BundledHom
+  {c : Type u → Type v}
+  (h : {α β : Type u} → (α → β) → c α → c β → Prop) where
+  id : ∀ {α : Type u} (cα : c α), h id cα cα
+  comp : ∀ {α β γ : Type u} {cα : c α} {cβ : c β} {cγ : c γ} {g : β → γ} {f : α → β} (_ : h f cα cβ) (_ : h g cβ cγ), h (g ∘ f) cα cγ
+
+structure BundledMap
   {c : Type u → Type v}
   (h : {α β : Type u} → (α → β) → c α → c β → Prop)
-  (X Y : Bundled c) where
+  [BundledHom h]
+  (X Y : Bundled c)
+  where
   map : X.type → Y.type
   str : h map X.str Y.str
 
-def CategoryBundled
+def CatBundled
   (c : Type u → Type v)
   (h : {α β : Type u} → (α → β) → c α → c β → Prop) 
-  (inst_id : ∀ {α : Type u} (cα : c α), h id cα cα)
-  (inst_comp : ∀ {α β γ : Type u} (cα : c α) (cβ : c β) (cγ : c γ) (g : β → γ) (f : α → β) (_ : h f cα cβ) (_ : h g cβ cγ), h (g ∘ f) cα cγ)  
-  : Category (Bundled c) := {
-  hom := BundledHom h,
-  id := λ X => {
+  [inst : BundledHom h] : Category (Bundled c) where
+  hom := BundledMap h
+  id X := {
     map := id,
-    str := inst_id X.str,
-  },
-  comp := λ {X Y Z} g f => {
+    str := inst.id X.str,
+  }
+  comp g f := {
     map := g.map ∘ f.map,
-    str := inst_comp X.str Y.str Z.str g.map f.map f.str g.str,
-  },
-  id_comp := λ f => by dsimp; congr,
-  comp_id := λ f => by dsimp; congr,
-  comp_assoc := λ h g f => by dsimp; congr,
-}
-
--- TODO: change api little bit, so that last to arguments are not needed anymore..
-def CatMonoid := CategoryBundled
-    Algebra.Monoid
-    Algebra.MonoidHom
-    (λ _ => inferInstance)
-    (λ cα cβ cγ g f hf hg => sorry)
-
-#check CatMonoid
+    str := inst.comp f.str g.str,
+  }
+  id_comp f := by dsimp; congr
+  comp_id f := by dsimp; congr
+  comp_assoc h g f := by dsimp; congr
 
 end CategoryTheory
 

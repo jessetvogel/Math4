@@ -7,7 +7,7 @@ variable (α : Sort u) [C : Category α]
 
 def op := α
 
-postfix:max " ᵒᵖ " => op
+postfix:max "ᵒᵖ " => op
 
 instance : Category (op α) where
   hom X Y := C.hom Y X

@@ -15,4 +15,6 @@ def zero_add : ∀ (x : α), 0 + x = x := λ _ => by rw [add_comm, add_zero];
 
 end AddMonoid
 
+class abbrev AddMonoidHom (f : α → β) [AddMonoid α] [AddMonoid β] : Prop := AddHom f, ZeroHom f
+
 end Algebra

@@ -3,12 +3,12 @@ import Math.Data.Function
 namespace CategoryTheory
 
 class Category (α : Sort u) where
-  hom     : α → α → Sort v
-  id      : ∀ (X : α), hom X X
-  comp    : ∀ {X Y Z : α}, (hom Y Z) → (hom X Y) → (hom X Z)
+  hom : α → α → Sort v
+  id : ∀ (X : α), hom X X
+  comp : ∀ {X Y Z : α}, (hom Y Z) → (hom X Y) → (hom X Z)
   comp_id : ∀ {X Y : α} (f : hom X Y), comp f (id X) = f := by simp
   id_comp : ∀ {X Y : α} (f : hom X Y), comp (id Y) f = f := by simp
-  comp_assoc   : ∀ {W X Y Z : α} (h : hom Y Z) (g : hom X Y) (f : hom W X), comp (comp h g) f = comp h (comp g f) := by simp
+  comp_assoc : ∀ {W X Y Z : α} (h : hom Y Z) (g : hom X Y) (f : hom W X), comp (comp h g) f = comp h (comp g f) := by simp
 
 infixr:80 " ∘ " => Category.comp
 prefix:max "𝟙 " => Category.id
@@ -105,38 +105,10 @@ class terminal (Y : α) : Prop where
 class zero (X : α) : Prop where
   is_zero : initial X ∧ terminal X
 
--- structure Isomorphism {C : Category} (X Y : C.obj) where
---   f : C.hom X Y
---   g : C.hom Y X
---   comp_gf : g ∘ f = C.id X := by simp
---   comp_fg : f ∘ g = C.id Y := by simp
-
--- infix:80 " ≅ " => Isomorphism
-
--- def Isomorphism.comp (i₂ : Y ≅ Z) (i₁ : X ≅ Y) : X ≅ Z := {
---   f := i₂.f ∘ i₁.f,
---   g := i₁.g ∘ i₂.g,
---   comp_gf := by rw [C.comp_assoc, ← C.comp_assoc i₂.g, i₂.comp_gf, C.id_comp, i₁.comp_gf],
---   comp_fg := by rw [C.comp_assoc, ← C.comp_assoc i₁.f, i₁.comp_fg, C.id_comp, i₂.comp_fg],
--- }
-
--- def Isomorphism.id (X : C.obj) : X ≅ X := {
---   f := C.id X,
---   g := C.id X
--- }
-
 namespace Category
 
 class thin (α : Type u) [Category α] : Prop :=
   is_thin : ∀ {X Y : α} (f g : hom X Y), f = g
-
--- Opposite category
--- def op : Category := {
---   obj := C.obj,
---   hom := λ X Y => C.hom Y X,
---   id := C.id,
---   comp := λ g f => f ∘ g,
--- }
 
 /-- The product category. -/
 instance product [Category α] [Category β] : Category (α × β) where

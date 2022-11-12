@@ -1,14 +1,14 @@
-import Math.Algebra.Monoid.Basic
+import Math.Algebra.Ring.Basic
 import Math.CategoryTheory.Bundled.Basic
 
 open CategoryTheory
 
 namespace Algebra
 
-instance : BundledHom MonoidHom where
+instance : BundledHom RingHom where
   id _ := inferInstance
   comp {_ _ _ _ _ _ _ _} _ _ := inferInstance
 
-def CatMonoid := CatBundled Monoid MonoidHom
+def CatGroup := CatBundled Ring RingHom
 
 end Algebra
