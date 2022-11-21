@@ -1,4 +1,7 @@
 import Math.Data.Function
+import Math.Order.Basic
+
+open Order
 
 namespace SetTheory
 
@@ -8,19 +11,17 @@ def Set (α : Type u) := α → Prop
 class Inter (α : Type u) where
   inter : α → α → α
 
+infixr:80 " ∩ " => Inter.inter
+
 class Union (α : Type u) where
   union : α → α → α
 
-class Compl (α : Type u) where
-  compl : α → α
+infixr:60 " ∪ " => Union.union
 
 class Subset (α : Type u) where
   subset : α → α → Prop
 
-infixr:60 " ∪ " => Union.union
-infixr:80 " ∩ " => Inter.inter
 infixl:51 " ⊆ " => Subset.subset
-postfix:max " ᶜ " => Compl.compl
 
 instance (α : Type u) : Membership α (Set α) where
   mem x A := A x

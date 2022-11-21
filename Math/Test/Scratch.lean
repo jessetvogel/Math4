@@ -9,10 +9,10 @@ structure Monoid where
 
 infixl:60 " * " => Monoid.mul _
 
-@[appUnexpander Monoid.mul]
-def unexpandMonoidMul : Lean.PrettyPrinter.Unexpander
-| `($_ $_ $x $y) => `($x * $y)
-| _ => throw ()
+-- @[appUnexpander Monoid.mul]
+-- def unexpandMonoidMul : Lean.PrettyPrinter.Unexpander
+-- | `($_ $_ $x $y) => `($x * $y)
+-- | _ => throw ()
 
 structure Group extends Monoid where
   inv : type → type
@@ -21,10 +21,10 @@ structure Group extends Monoid where
 
 postfix:max " ⁻¹ " => Group.inv _
 
-@[appUnexpander Group.inv]
-def unexpandGroupInv : Lean.PrettyPrinter.Unexpander
-| `($_ $_ $x) => `($x⁻¹)
-| _ => throw ()
+-- @[appUnexpander Group.inv]
+-- def unexpandGroupInv : Lean.PrettyPrinter.Unexpander
+-- | `($_ $_ $x) => `($x⁻¹)
+-- | _ => throw ()
 
 @[appUnexpander Group.toMonoid]
 def unexpandGroupToMonoid : Lean.PrettyPrinter.Unexpander
